@@ -5,6 +5,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import simple.job.api.enums.ScheduleTypeEnum;
+import simple.job.common.adapter.dao.ISimpleJobDao;
 import simple.job.common.idgeneate.IIdGenerate;
 import simple.job.common.utils.SpringContextUtils;
 import simple.job.core.factory.IdGenerateFactory;
@@ -24,6 +25,8 @@ import java.util.concurrent.ScheduledFuture;
 public class CornSimpleJobSchedule implements ISimpleJobSchedule {
     @Autowired
     private IdGenerateFactory idGenerateFactory;
+    @Autowired
+    private ISimpleJobDao iSimpleJobDao;
 
     private IIdGenerate idGenerate;
 

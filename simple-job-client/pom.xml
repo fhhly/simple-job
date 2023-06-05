@@ -11,5 +11,12 @@
 
     <artifactId>simple-job-client</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>fhh.simplejob</groupId>
+            <artifactId>simple-job-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
