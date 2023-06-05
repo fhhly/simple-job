@@ -2,6 +2,7 @@ package simple.job.core.shecdule;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import simple.job.api.enums.ScheduleTypeEnum;
 import simple.job.common.idgeneate.IIdGenerate;
@@ -26,7 +27,7 @@ public class CornSimpleJobSchedule implements ISimpleJobSchedule {
 
     private IIdGenerate idGenerate;
 
-    private Map<String, TimerTask> timerTaskRunnerConcurrentHashMap = new ConcurrentHashMap<String, TimerTask>();
+    private Map<String, TimerTask> timerTaskRunnerConcurrentHashMap = new ConcurrentHashMap<>();
 
     private Map<String, ScheduledFuture> scheduledFutureMap = new ConcurrentHashMap<>();
 
@@ -35,15 +36,27 @@ public class CornSimpleJobSchedule implements ISimpleJobSchedule {
     }
 
     @Override
-    public String register(String taskTime, TimerTask timerTask) {
+    public String register(String cron, TimerTask timerTask) {
         ThreadPoolTaskScheduler taskScheduler = SpringContextUtils.getBean(ThreadPoolTaskScheduler.class);
         String uniqueId = idGenerate.nextId();
-        return "";
+        CronTrigger trigger = new CronTrigger(cron);
+        timerTaskRunnerConcurrentHashMap.put(uniqueId, timerTask);
+        ScheduledFuture scheduledFuture = taskScheduler.schedule(timerTask, trigger);
+        scheduledFutureMap.put(uniqueId, scheduledFuture);
+        return uniqueId;
     }
 
     @Override
     public void unregister(String uniqueId) {
-
+        TimerTask timerTask = timerTaskRunnerConcurrentHashMap.get(uniqueId);
+        if (timerTask == null) {
+            return;
+        }
+        timerTaskRunnerConcurrentHashMap.remove(uniqueId);
+        ScheduledFuture scheduledFuture = scheduledFutureMap.remove(uniqueId);
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+        }
     }
 
     @Override

@@ -35,4 +35,34 @@ public class ObjectUtils {
     public static boolean isNotEmpty(final Object object) {
         return !isEmpty(object);
     }
+
+    public static boolean allNotNull(final Object... values) {
+        if (values == null) {
+            return false;
+        }
+
+        for (final Object val : values) {
+            if (val == null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean anyNotNull(final Object... values) {
+        return firstNonNull(values) != null;
+    }
+
+    @SafeVarargs
+    public static <T> T firstNonNull(final T... values) {
+        if (values != null) {
+            for (final T val : values) {
+                if (val != null) {
+                    return val;
+                }
+            }
+        }
+        return null;
+    }
 }
