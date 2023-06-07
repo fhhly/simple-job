@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2023/06/05 14:43:51
  */
 @Data
-public class SimpleJobInfo {
+public class SimpleJobInfo extends SimpleBasePojo {
     private String timeExpression;
 
     private String processorRunnerInfo;

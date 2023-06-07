@@ -4,13 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
+import simple.job.api.enums.JobStatusEnum;
 import simple.job.api.enums.ScheduleTypeEnum;
+import simple.job.api.pojo.SimpleJobInfo;
 import simple.job.common.adapter.dao.ISimpleJobDao;
 import simple.job.common.idgeneate.IIdGenerate;
 import simple.job.common.utils.SpringContextUtils;
 import simple.job.core.factory.IdGenerateFactory;
 import simple.job.core.task.TimerTask;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
@@ -46,6 +49,16 @@ public class CornSimpleJobSchedule implements ISimpleJobSchedule {
         timerTaskRunnerConcurrentHashMap.put(uniqueId, timerTask);
         ScheduledFuture scheduledFuture = taskScheduler.schedule(timerTask, trigger);
         scheduledFutureMap.put(uniqueId, scheduledFuture);
+        Date now = new Date();
+        SimpleJobInfo simpleJobInfo = new SimpleJobInfo();
+        simpleJobInfo.setId(uniqueId);
+        simpleJobInfo.setCreatedTime(now);
+        simpleJobInfo.setCreatedBy("test");
+        simpleJobInfo.setUpdateBy("test");
+        simpleJobInfo.setUpdateTime(now);
+        simpleJobInfo.setTimeExpression(cron);
+        simpleJobInfo.setStatus(JobStatusEnum.WAIT_SCHEDULE.getCode());
+
         return uniqueId;
     }
 
